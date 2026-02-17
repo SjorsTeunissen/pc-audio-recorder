@@ -18,7 +18,7 @@ export default function RecordingControls({
   onPause,
   onResume,
 }: RecordingControlsProps) {
-  const isIdle = status === "idle" || status === "stopped";
+  const isIdle = status === "idle" || status === "stopped" || status === "error";
   const isRecording = status === "recording";
   const isPaused = status === "paused";
   const isEncoding = status === "encoding";
