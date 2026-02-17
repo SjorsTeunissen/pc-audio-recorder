@@ -182,6 +182,13 @@ describe("App", () => {
       render(<App />);
       expect(screen.getByText("System audio not shared.")).toBeInTheDocument();
     });
+
+    it("shows REC button in error state so user can retry", () => {
+      mockReturnValue.status = "error";
+      mockReturnValue.error = "System audio not shared.";
+      render(<App />);
+      expect(screen.getByRole("button", { name: /rec/i })).toBeInTheDocument();
+    });
   });
 
   describe("new recording clears preview", () => {
