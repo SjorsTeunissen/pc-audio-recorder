@@ -21,18 +21,23 @@ export function encode(channels: Float32Array[], sampleRate: number): Blob {
   const encoder = new Mp3Encoder(numChannels, sampleRate, KBPS);
 
   const left = floatTo16Bit(channels[0]);
-  const right = numChannels > 1 ? floatTo16Bit(channels[1]) : left;
+  const right = numChannels > 1 ? floatTo16Bit(channels[1]) : null;
 
   const mp3Data: BlobPart[] = [];
   const totalSamples = left.length;
 
   for (let i = 0; i < totalSamples; i += CHUNK_SIZE) {
     const leftChunk = left.subarray(i, Math.min(i + CHUNK_SIZE, totalSamples));
-    const rightChunk = right.subarray(
-      i,
-      Math.min(i + CHUNK_SIZE, totalSamples),
-    );
-    const mp3buf = encoder.encodeBuffer(leftChunk, rightChunk);
+    let mp3buf: Int8Array;
+    if (numChannels === 1) {
+      mp3buf = encoder.encodeBuffer(leftChunk);
+    } else {
+      const rightChunk = right!.subarray(
+        i,
+        Math.min(i + CHUNK_SIZE, totalSamples),
+      );
+      mp3buf = encoder.encodeBuffer(leftChunk, rightChunk);
+    }
     if (mp3buf.length > 0) {
       mp3Data.push(new Uint8Array(mp3buf));
     }
