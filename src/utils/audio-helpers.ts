@@ -28,7 +28,7 @@ export function formatDuration(seconds: number): string {
   return `${paddedMins}:${paddedSecs}`;
 }
 
-export function generateFilename(): string {
+export function generateFilename(extension = "mp3"): string {
   const now = new Date();
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, "0");
@@ -37,5 +37,5 @@ export function generateFilename(): string {
   const minutes = String(now.getMinutes()).padStart(2, "0");
   const seconds = String(now.getSeconds()).padStart(2, "0");
 
-  return `recording-${year}-${month}-${day}-${hours}${minutes}${seconds}.mp3`;
+  return `recording-${year}-${month}-${day}-${hours}${minutes}${seconds}.${extension}`;
 }

@@ -55,6 +55,24 @@ describe("generateFilename", () => {
     const filename = generateFilename();
     expect(filename).toMatch(/^recording-/);
   });
+
+  test("defaults to .mp3 extension when no argument is provided", () => {
+    vi.setSystemTime(new Date("2026-02-16T14:30:22"));
+    const filename = generateFilename();
+    expect(filename).toBe("recording-2026-02-16-143022.mp3");
+  });
+
+  test("generates filename with .mp4 extension", () => {
+    vi.setSystemTime(new Date("2026-02-16T14:30:22"));
+    const filename = generateFilename("mp4");
+    expect(filename).toBe("recording-2026-02-16-143022.mp4");
+  });
+
+  test("generates filename with .webm extension", () => {
+    vi.setSystemTime(new Date("2026-02-16T14:30:22"));
+    const filename = generateFilename("webm");
+    expect(filename).toBe("recording-2026-02-16-143022.webm");
+  });
 });
 
 describe("mergeAudioStreams", () => {
