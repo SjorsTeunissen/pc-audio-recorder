@@ -209,4 +209,85 @@ describe("App", () => {
       expect(screen.getByText("Record something to preview it here")).toBeInTheDocument();
     });
   });
+
+  describe("mode toggle", () => {
+    it("renders a mode toggle with Audio and Screen options", () => {
+      render(<App />);
+      expect(screen.getByRole("radio", { name: /audio/i })).toBeInTheDocument();
+      expect(screen.getByRole("radio", { name: /screen/i })).toBeInTheDocument();
+    });
+
+    it("defaults to audio mode", () => {
+      render(<App />);
+      const audioRadio = screen.getByRole("radio", { name: /audio/i });
+      expect(audioRadio).toBeChecked();
+    });
+
+    it("switches to screen mode when screen radio is clicked", () => {
+      render(<App />);
+      const screenRadio = screen.getByRole("radio", { name: /screen/i });
+      fireEvent.click(screenRadio);
+      expect(screenRadio).toBeChecked();
+    });
+
+    it("disables mode toggle during recording", () => {
+      mockReturnValue.status = "recording";
+      render(<App />);
+      expect(screen.getByRole("radio", { name: /audio/i })).toBeDisabled();
+      expect(screen.getByRole("radio", { name: /screen/i })).toBeDisabled();
+    });
+
+    it("disables mode toggle during encoding", () => {
+      mockReturnValue.status = "encoding";
+      render(<App />);
+      expect(screen.getByRole("radio", { name: /audio/i })).toBeDisabled();
+      expect(screen.getByRole("radio", { name: /screen/i })).toBeDisabled();
+    });
+
+    it("disables mode toggle when paused", () => {
+      mockReturnValue.status = "paused";
+      render(<App />);
+      expect(screen.getByRole("radio", { name: /audio/i })).toBeDisabled();
+      expect(screen.getByRole("radio", { name: /screen/i })).toBeDisabled();
+    });
+  });
+
+  describe("conditional preview rendering", () => {
+    it("renders AudioPreview in audio mode", () => {
+      mockReturnValue.status = "stopped";
+      mockReturnValue.audioBlob = new Blob(["mp3-data"], { type: "audio/mpeg" });
+      render(<App />);
+      expect(document.querySelector("audio")).toBeInTheDocument();
+      expect(document.querySelector("video")).not.toBeInTheDocument();
+    });
+
+    it("renders VideoPreview in screen mode", () => {
+      mockReturnValue.status = "stopped";
+      mockReturnValue.videoBlob = new Blob(["mp4-data"], { type: "video/mp4" });
+      render(<App />);
+      fireEvent.click(screen.getByRole("radio", { name: /screen/i }));
+      expect(document.querySelector("video")).toBeInTheDocument();
+      expect(document.querySelector("audio")).not.toBeInTheDocument();
+    });
+
+    it("shows empty state in screen mode when no videoBlob", () => {
+      render(<App />);
+      fireEvent.click(screen.getByRole("radio", { name: /screen/i }));
+      expect(screen.getByText("Record something to preview it here")).toBeInTheDocument();
+    });
+  });
+
+  describe("mode-aware RecordingControls", () => {
+    it("shows 'Record Audio' button in audio mode", () => {
+      render(<App />);
+      expect(screen.getByRole("button", { name: /record audio/i })).toBeInTheDocument();
+    });
+
+    it("shows 'Record Screen' button in screen mode", () => {
+      render(<App />);
+      const screenRadio = screen.getByRole("radio", { name: /screen/i });
+      fireEvent.click(screenRadio);
+      expect(screen.getByRole("button", { name: /record screen/i })).toBeInTheDocument();
+    });
+  });
 });

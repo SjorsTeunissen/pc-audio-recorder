@@ -1,4 +1,4 @@
-import type { RecordingStatus } from "../hooks/useAudioRecorder";
+import type { RecordingStatus, RecordingMode } from "../hooks/useAudioRecorder";
 import { formatDuration } from "../utils/audio-helpers";
 
 interface RecordingControlsProps {
@@ -8,6 +8,7 @@ interface RecordingControlsProps {
   onStop: () => void;
   onPause: () => void;
   onResume: () => void;
+  mode?: RecordingMode;
 }
 
 export default function RecordingControls({
@@ -17,11 +18,13 @@ export default function RecordingControls({
   onStop,
   onPause,
   onResume,
+  mode = "audio",
 }: RecordingControlsProps) {
   const isIdle = status === "idle" || status === "stopped" || status === "error";
   const isRecording = status === "recording";
   const isPaused = status === "paused";
   const isEncoding = status === "encoding";
+  const buttonLabel = mode === "screen" ? "Record Screen" : "Record Audio";
 
   return (
     <div className="flex flex-col items-center gap-6">
@@ -31,9 +34,9 @@ export default function RecordingControls({
           <div className="absolute h-32 w-32 rounded-full bg-gradient-to-br from-cyan-500 to-purple-500 opacity-20 blur-2xl" />
           <button
             onClick={onStart}
-            className="relative h-20 w-20 rounded-full bg-red-500 text-sm font-bold tracking-wider text-white ring-2 ring-cyan-500 transition-all hover:bg-red-600 hover:ring-cyan-400"
+            className="relative h-20 w-20 rounded-full bg-red-500 text-xs font-bold tracking-wider text-white ring-2 ring-cyan-500 transition-all hover:bg-red-600 hover:ring-cyan-400"
           >
-            REC
+            {buttonLabel}
           </button>
         </div>
       )}
