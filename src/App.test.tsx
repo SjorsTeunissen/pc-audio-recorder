@@ -26,6 +26,8 @@ beforeEach(() => {
     status: "idle",
     error: null,
     audioBlob: null,
+    videoBlob: null,
+    mode: "audio",
     duration: 0,
   };
 
