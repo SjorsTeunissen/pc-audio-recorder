@@ -98,4 +98,27 @@ describe("RecordingControls", () => {
       });
     });
   });
+
+  describe("mode-aware button text", () => {
+    it("shows 'Record Audio' when mode is audio", () => {
+      renderControls({ status: "idle", mode: "audio" });
+      expect(
+        screen.getByRole("button", { name: /record audio/i }),
+      ).toBeInTheDocument();
+    });
+
+    it("shows 'Record Screen' when mode is screen", () => {
+      renderControls({ status: "idle", mode: "screen" });
+      expect(
+        screen.getByRole("button", { name: /record screen/i }),
+      ).toBeInTheDocument();
+    });
+
+    it("defaults to 'Record Audio' when mode is not provided", () => {
+      renderControls({ status: "idle" });
+      expect(
+        screen.getByRole("button", { name: /record audio/i }),
+      ).toBeInTheDocument();
+    });
+  });
 });
